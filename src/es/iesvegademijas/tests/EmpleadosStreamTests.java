@@ -116,8 +116,13 @@ class EmpleadosStreamTests {
 			
 			
 			//
+			List<String> lstdep = listEmp.stream()
+					.map(e -> e.getDepartamento().getNombre())
+					.distinct()
+					.collect(toList());		
+				
 			
-			listEmp.forEach(System.out::println);
+			lstdep.forEach(System.out::println);
 		
 			empHome.commitTransaction();
 		}
@@ -140,9 +145,13 @@ class EmpleadosStreamTests {
 			empHome.beginTransaction();
 		
 			List<Empleado> listEmp = empHome.findAll();	
-			
-			
+						
 			//
+			List<String> nomApe = listEmp.stream()
+					
+					.map(e -> e.getNombre().toUpperCase()+", "+ e.getApellido1().toUpperCase()+", "+ e.getApellido2().toUpperCase()+"\n")
+					.collect(toList());
+				nomApe.forEach(System.out::println);
 			
 			listEmp.forEach(System.out::println);
 		
@@ -171,8 +180,14 @@ class EmpleadosStreamTests {
 			
 			
 			//
+			List<string> list2 = listEmp.stream()
+					
+					.map (e -> e.getCodigo() + ", " + e.getNif().substring(0 , 7)+ ", "+ e.getNif().substring(8))
+					.collect(toList());
 			
-			listEmp.forEach(System.out::println);
+			list2.forEach(System.out::println);			
+			
+			
 		
 			empHome.commitTransaction();
 		}
@@ -188,6 +203,7 @@ class EmpleadosStreamTests {
 	 * Para calcular este dato tendrá que restar al valor del presupuesto inicial (columna presupuesto) los gastos que se han generado (columna gastos).
 	 *  Tenga en cuenta que en algunos casos pueden existir valores negativos.
 	 */
+	@Test
 	void test4() {
 		
 		DepartamentoHome depHome = new DepartamentoHome();
@@ -198,8 +214,11 @@ class EmpleadosStreamTests {
 			List<Departamento> listDep = depHome.findAll();
 			
 			//
+			List<String> listPreAct = listDep.stream()
+					.map(p -> "nombre" + p.getNombre() + ", Presupuesto Actual: " + (p.getPresupuesto()-p.getGastos()))
+					.collect(toList());
 			
-			listDep.forEach(System.out::println);
+			listPreAct.forEach(System.out::println);
 		
 			depHome.commitTransaction();
 		}
@@ -212,6 +231,7 @@ class EmpleadosStreamTests {
 	/**
 	 * 5. Lista el nombre de los departamentos y el valor del presupuesto actual ordenado de forma ascendente.
 	 */
+	@Test
 	void test5() {
 		
 		DepartamentoHome depHome = new DepartamentoHome();
@@ -223,7 +243,12 @@ class EmpleadosStreamTests {
 			
 			//
 			
-			listDep.forEach(System.out::println);
+			List<String> listPrep = listDep.stream()
+					.sorted(comparing(Departamento::getPresupuesto).reversed())
+					.map( d -> d.getNombre() + ", "+ d.getPresupuesto())					
+					.collect(toList());
+			
+			listPrep.forEach(System.out::println);
 		
 			depHome.commitTransaction();
 		}
@@ -236,6 +261,7 @@ class EmpleadosStreamTests {
 	/**
 	 * 6. Devuelve una lista con el nombre y el presupuesto, de los 3 departamentos que tienen mayor presupuesto
 	 */
+	@Test
 	void test6() {
 		
 		DepartamentoHome depHome = new DepartamentoHome();
@@ -246,8 +272,13 @@ class EmpleadosStreamTests {
 			List<Departamento> listDep = depHome.findAll();
 			
 			//
-			
-			listDep.forEach(System.out::println);
+			List<String> lisMaxPrep = listDep.stream()
+					.sorted(comparing(Departamento::getPresupuesto).reversed())
+					.limit(3)
+					.map(d -> d.getNombre() + ", " + d.getPresupuesto())
+					.collect(toList());
+					
+			lisMaxPrep.forEach(System.out::println);
 		
 			depHome.commitTransaction();
 		}
@@ -270,6 +301,9 @@ class EmpleadosStreamTests {
 			List<Departamento> listDep = depHome.findAll();
 			
 			//
+			List<Departamento> listbetwen = listDep.stream()
+					.filter(d -> d.)
+					
 			
 			listDep.forEach(System.out::println);
 		
