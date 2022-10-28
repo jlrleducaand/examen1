@@ -289,7 +289,8 @@ class EmpleadosStreamTests {
 	}
 	
 	/**
-	 * 7. Devuelve una lista con el nombre de los departamentos y el presupesto, de aquellos que tienen un presupuesto entre 100000 y 200000 euros
+	 * 7. Devuelve una lista con el nombre de los departamentos y el presupuesto, 
+	 * de aquellos que tienen un presupuesto entre 100000 y 200000 euros
 	 */
 	void test7() {
 		
@@ -301,12 +302,14 @@ class EmpleadosStreamTests {
 			List<Departamento> listDep = depHome.findAll();
 			
 			//
-			List<Departamento> listbetwen = listDep.stream()
-					.filter(d -> d.)
+			List<String> listbetwen = listDep.stream()
+					.filter(d -> d.getPresupuesto()>100000 && d.getPresupuesto()< 200000)
+					.map(d -> d.getNombre() + ", " + d.getPresupuesto())
+					.collect(toList());
 					
 			
-			listDep.forEach(System.out::println);
-		
+			listbetwen.forEach(System.out::println);
+	
 			depHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -316,7 +319,8 @@ class EmpleadosStreamTests {
 	}
 	
 	/**
-	 * 8. Devuelve una lista con 5 filas a partir de la tercera fila de empleado ordenado por código de empleado. La tercera fila se debe incluir en la respuesta.
+	 * 8. Devuelve una lista con 5 filas a partir de la tercera fila de empleado ordenado por código de empleado. 
+	 * La tercera fila se debe incluir en la respuesta.
 	 */
 	@Test
 	void test8() {
@@ -329,8 +333,15 @@ class EmpleadosStreamTests {
 			
 			
 			//
+			List<String> list5filas = listEmp.stream()
+					
+					.limit(5)
+					.skip(2)
+					.map(e -> e.getNombre())
+					.collect(toList());
 			
-			listEmp.forEach(System.out::println);
+			
+			list5filas.forEach(System.out::println);
 		
 			empHome.commitTransaction();
 		}
@@ -355,8 +366,14 @@ class EmpleadosStreamTests {
 			List<Departamento> listDep = depHome.findAll();
 			
 			//
-			
-			listDep.forEach(System.out::println);
+			List<String> listDep5000 = listDep.stream()
+							.filter(d -> d.getGastos()<5000)
+							.sorted(comparing(Departamento::getGastos).reversed())
+							.map(d -> d.getCodigo() + d.getNombre())
+							.collect(toList());
+							
+							
+			listDep5000.forEach(System.out::println);
 		
 			depHome.commitTransaction();
 		}
@@ -380,8 +397,13 @@ class EmpleadosStreamTests {
 			
 			
 			//
+			List<Departamento> listDiazMoreno = listEmp.stream()
+					.filter(e -> "Diaz".equals(e.getApellido2() || "Moreno".equals(e.getApellido2()))
+					.map(Departamento::getEmpleados)
+					.collect(toList());
+					
 			
-			listEmp.forEach(System.out::println);
+			listDiazMoreno.forEach(System.out::println);
 		
 			empHome.commitTransaction();
 		}
@@ -401,13 +423,18 @@ class EmpleadosStreamTests {
 		EmpleadoHome empHome = new EmpleadoHome();	
 		try {
 			empHome.beginTransaction();
-		
-			List<Empleado> listEmp = empHome.findAll();	
+				//
+			List<Empleado> listEmp = empHome.findAll();			
+			var setDep =  new HashSet<> (Arrays.asList(2,4,5));
+			
+			List<String> listDep245 = listEmp.stream()
+					.filter(e -> setDep.contains(e.getDepartamento().getCodigo()))
+					.map(e -> e.getNombre() + e.getApellido1()+ e.getNif())
+					.collect(toList());
 			
 			
-			//
+			listDep245.forEach(System.out::println);
 			
-			listEmp.forEach(System.out::println);
 		
 			empHome.commitTransaction();
 		}
@@ -431,10 +458,15 @@ class EmpleadosStreamTests {
 		
 			List<Empleado> listEmp = empHome.findAll();	
 			
+			List<String> listDepEsp = listEmp.stream()
+					
+					.filter(e -> "38382980m".equals(e.getNif()))
+					.map(e -> e.getDepartamento().getNombre())
+					.collect(toList());
 			
 			//
 			
-			listEmp.forEach(System.out::println);
+			listDepEsp.forEach(System.out::println);
 		
 			empHome.commitTransaction();
 		}
@@ -461,7 +493,14 @@ class EmpleadosStreamTests {
 			
 			//
 			
-			listEmp.forEach(System.out::println);
+			List<String> list100000 = listEmp.stream()
+					.filter(e -> e.getDepartamento().getPresupuesto()>100000 && e.getDepartamento().getPresupuesto()<200000)
+					.map(e -> e.getNombre())
+					.collect(toList());
+					
+					
+			
+			list100000.forEach(System.out::println);
 		
 			empHome.commitTransaction();
 		}
@@ -486,7 +525,10 @@ class EmpleadosStreamTests {
 			
 			//
 			
-			listDep.forEach(System.out::println);
+					Double valorminimo = listDep.stream().collect(minBy(comparing(Departamento::getPresupuesto)))
+					
+			
+							System.out.println("El valor minimo es: " + valorminimo);
 		
 			depHome.commitTransaction();
 		}
